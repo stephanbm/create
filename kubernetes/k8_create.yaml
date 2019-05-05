@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-type: Deployment
+kind: Deployment
 metadata:
   name: create-deployment
   labels:
@@ -29,7 +29,7 @@ spec:
               - mountPath: /services
                 name: nfs-export-services
               - mountPath: /etc/ocf-create
-                name: secrets
+                name: create-secrets
                 readOnly: true
             livenessProbe:
               exec:
@@ -44,16 +44,14 @@ spec:
             nfs:
               server: dataloss
               path: /opt/homes/home
-              type: directory
           - name: nfs-export-services
             nfs:
               server: dataloss
               path: /opt/homes/services
-              type: directory
-          - name: secrets
+          - name: create-secrets
             hostPath:
               path: /opt/share/docker/secrets/create
-              type: directory
+              type: Directory
         dnsPolicy: ClusterFirst
         dnsConfig:
           searches:
@@ -66,7 +64,7 @@ metadata:
   namespace: dev-wporr
 spec:
   type: ExternalName
-  ExternalName: broker.ocf.berkeley.edu
+  externalName: broker.ocf.berkeley.edu
   ports:
   - protocol: TCP
     port: 6378
