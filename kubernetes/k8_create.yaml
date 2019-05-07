@@ -16,7 +16,7 @@ spec:
       spec:
         containers:
           - name: create-worker
-            image: "docker.ocf.berkeley.edu/create" #revise to include version
+            image: "docker.ocf.berkeley.edu/create:testing-wporr"
             ports:
               - containerPort: 6378
             resources:
@@ -31,6 +31,14 @@ spec:
               - mountPath: /etc/ocf-create
                 name: secrets
                 readOnly: true
+            livenessProbe:
+              exec:
+                command:
+                - python
+                - '-m'
+                - 'create.healthcheck'
+              initialDelaySeconds: 15
+              periodSeconds: 15
         volumes:
           - name: nfs-export-home
             nfs:
